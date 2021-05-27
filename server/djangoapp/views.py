@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
+from django.views.generic import TemplateView
 import logging
 import json
 
@@ -16,14 +17,21 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-
 # Create an `about` view to render a static about page
 # def about(request):
-# ...
-
+#class StaticAboutUs(TemplateView):
+#    template_name = 'static_aboutus.html'
+def about(request):
+    context = {}
+    if request.method == "GET":
+        return render(request, 'djangoapp/static_aboutus.html', context)
 
 # Create a `contact` view to return a static contact page
 #def contact(request):
+def contact(request):
+    context = {}
+    if request.method == "GET":
+        return render(request, 'djangoapp/static_contactus.html', context)
 
 # Create a `login_request` view to handle sign in request
 # def login_request(request):
