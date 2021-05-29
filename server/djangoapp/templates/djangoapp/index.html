@@ -29,16 +29,26 @@
                 </li>                
             </ul>
             <ul class="navbar-nav navbar-expand-sm navbar-right">
+                {% if not user.is_authenticated %}
                 <li class="nav-item">
-                    <form class="form-inline" action="#">
+                    <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
+                        {% csrf_token %}
                         <div class="input-group">
                             <input class="form-control" type="text" placeholder="username" name="username">
                             <input class="form-control" type="password" placeholder="password" name="psw">
                             <button class="btn btn-primary" type="submit">Login</button>
-                            <a class="btn btn-link" href="#">Sign Up</a>
+                            <a class="btn btn-link" href="{% url 'djangoapp:signup' %}">Sign Up</a>
                         </div>
                     </form>
                 </li>
+                {% else %}
+                <li class="nav-item">
+                <a class="btn btn-link" href="#">{{ user.first_name }} ({{ user.username }})</a>
+                </li>
+                <li class="nav-item">
+                <a class="btn btn-link" href="/djangoapp/logout">Logout</a>
+                </li>
+                {% endif %}
             </ul>
         </nav>
     <!--Add a dealer table here -->
