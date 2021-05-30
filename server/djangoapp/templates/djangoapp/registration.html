@@ -8,17 +8,24 @@
     <body>
     <!--Add a registration form here  url 'djangoapp:signup' -->
         <div class="container">
+            <h1>Sign Up</h1>
             <form action="#" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <input class="form-control" type="text" placeholder="First Name" name="firstname">
-                    <input class="form-control" type="text" placeholder="Last Name" name="lastname">
-                    <input class="form-control" type="text" placeholder="username" name="username">
-                    <input class="form-control" type="password" placeholder="password" name="psw">
-                    <button class="btn btn-primary" type="submit">Login</button>
+                    <label for="firstname">First Name</label>
+                    <input class="form-control" type="text" name="firstname">
+                    <label for="lastname">Last Name</label>
+                    <input class="form-control" type="text" name="lastname">
+                    <label for="username">User Name</label>
+                    <input class="form-control" type="text" name="username">
+                    <label for="psw">Password</label>
+                    <input class="form-control" type="password" placeholder="Enter pass:" name="psw">
                 </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
             </form>
-            <p>{{message}}</p>
+            {% if message %}
+            <div class="alert alert-warning">{{message}}</div>
+            {% endif %}
         </div>
     </body>
 </html>
