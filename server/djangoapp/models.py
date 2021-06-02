@@ -46,6 +46,7 @@ class CarModel(models.Model):
 
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
-
+class CarDealer(dict):
+    pass
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data

@@ -60,6 +60,7 @@ def registration_request(request):
     if request.method == 'GET':
         return render(request, 'djangoapp/registration.html', context)
     else:
+        # in case of POST mothod
         username = request.POST['username']
         user_ok = False
         try:
