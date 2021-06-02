@@ -17,8 +17,10 @@ def get_request(url, **kwargs):
         print("Network exception occured")
     status_code = response.status_code
     print('With status {}'.format(status_code))
+    #if status_code !=200:
+    #    raise Exception('the call to url: {} return status {}'.format(url, status_code))
     json_data = json.loads(response.text)
-    return json_data
+    return (json_data, {'status':status_code, 'message': json_data})
 
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
@@ -30,12 +32,12 @@ def get_request(url, **kwargs):
 # - Parse JSON results into a CarDealer object list
 def get_dealers_from_cf(url, **kwargs):
     result = []
-    json_result = get_request(url)
+    json_result, stat = get_request(url)
     if 'docs' in json_result:
         dealers = json_result['docs']
         for dealer in dealers:
             result.append(CarDealer(dealer))
-    return result
+    return (result, stat)
 
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
