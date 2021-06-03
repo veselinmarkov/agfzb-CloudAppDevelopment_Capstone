@@ -50,3 +50,10 @@ class CarDealer(dict):
     pass
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data
+class DealerReview(dict):
+    def __ini__(self, *args, **kwargs):
+        from .restapis import analyze_review_sentiments
+        super().__init__(*args, **kwargs)
+        print('Before adding the sentiment ' +str(self))
+        if 'review' in self:
+            self['sentiment'] = analyze_review_sentiments(self['review'])

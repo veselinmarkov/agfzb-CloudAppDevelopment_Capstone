@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import 
 # from .restapis import related methods
-from .restapis import get_dealers_from_cf
+from .restapis import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -84,18 +84,35 @@ def get_dealerships(request):
     if request.method == "GET":
         #return render(request, 'djangoapp/index.html', context)
         url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/dealership'
-        dealerships, stat = get_dealers_from_cf(url)
-        if stat['status'] !=200:
-            return HttpResponse(json.dumps(result))    
+        try:
+            dealerships = get_dealers_from_cf(url)
+        except RestException as e1:
+            return HttpResponse('Rest Exception \n' + str(e1))
+        #except Exception as e2:
+        #    return HttpResponse('Network Exception \n' + str(e2))
         dealer_names = ' '.join([dealer['city'] for dealer in dealerships])
         return HttpResponse(dealer_names)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
-# ...
+def get_dealer_details(request, dealer_id):
+    #context = {}
+    if request.method == "GET":
+        url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/review'
+        try:
+            reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        except RestException as e1:
+            return HttpResponse('Rest Exception \n' + str(e1))
+        #except Exception as e2:
+        #    return HttpResponse('Network Exception \n' + str(e2))
+        review_names = ' '.join([review['name']+' '+str(review['sentiment']) for review in reviews])
+        return HttpResponse(review_names)
+
+def get_sentiment(request):
+    if request.method == 'GET':
+        label = analyze_review_sentiments('Great service!')
+        return HttpResponse(label)
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...
-
