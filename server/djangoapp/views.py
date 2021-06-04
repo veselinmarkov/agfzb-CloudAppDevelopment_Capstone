@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import 
 # from .restapis import related methods
-from .restapis import *
+from .restapis import * 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -114,5 +114,21 @@ def get_sentiment(request):
         return HttpResponse(label)
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+    if not request.user.is_authenticated:
+        return {'error': 'Add Review method: Not registered user'}
+    review = {}
+    review['name'] = 'Veselin Markov'
+    review['time'] = datetime.utcnow().isoformat()
+    review['dealership'] = int(dealer_id)
+    review['review'] = 'This is a great car dealer'
+    review['purchase'] = True
+    json_payload ={'review': review}
+    url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/review'
+    try:
+        response = post_request(url, json_payload)
+    except RestException as e1:
+        return HttpResponse('Rest Exception \n' + str(e1))
+    return HttpResponse(response)
+
+
