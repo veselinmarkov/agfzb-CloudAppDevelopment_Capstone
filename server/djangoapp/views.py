@@ -97,7 +97,7 @@ def get_dealerships(request):
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
-    #context = {}
+    context = {}
     if request.method == "GET":
         url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/review'
         try:
@@ -106,8 +106,12 @@ def get_dealer_details(request, dealer_id):
             return HttpResponse('Rest Exception \n' + str(e1))
         #except Exception as e2:
         #    return HttpResponse('Network Exception \n' + str(e2))
-        review_names = ' '.join([review['name']+' '+str(review['sentiment']) for review in reviews])
-        return HttpResponse(review_names)
+        #review_names = ' '.join([review['name']+' '+str(review['sentiment']) for review in reviews])
+        #return HttpResponse(review_names)
+        context['dealerid'] = dealer_id
+        context['reviews'] = reviews
+        return render(request, 'djangoapp/dealer_details.html', context)
+
 
 def get_sentiment(request):
     if request.method == 'GET':
