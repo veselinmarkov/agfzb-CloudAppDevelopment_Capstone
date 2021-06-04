@@ -3,8 +3,8 @@ import json
 # import related models here
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
-import os
-from . import nlu_sercrets
+import os 
+from . import nlu_secrets
 
 class RestException(Exception):
     pass

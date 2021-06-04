@@ -80,7 +80,7 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
-    #context = {}
+    context = {}
     if request.method == "GET":
         #return render(request, 'djangoapp/index.html', context)
         url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/dealership'
@@ -88,10 +88,11 @@ def get_dealerships(request):
             dealerships = get_dealers_from_cf(url)
         except RestException as e1:
             return HttpResponse('Rest Exception \n' + str(e1))
+        context['dealerships'] = dealerships
         #except Exception as e2:
         #    return HttpResponse('Network Exception \n' + str(e2))
-        dealer_names = ' '.join([dealer['city'] for dealer in dealerships])
-        return HttpResponse(dealer_names)
+        #dealer_names = ' '.join([dealer['city'] for dealer in dealerships])
+        return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
