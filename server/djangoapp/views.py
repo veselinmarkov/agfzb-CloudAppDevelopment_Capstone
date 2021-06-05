@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
-# from .models import 
+from .models import CarModel
 # from .restapis import related methods
 from .restapis import * 
 from django.contrib.auth import login, logout, authenticate
@@ -148,6 +148,8 @@ class Add_review(View):
 
     def get(self, request, dealer_id):
         context = {'dealer_id': dealer_id}
+        carmodels = CarModel.objects.all()
+        context['cars'] = carmodels
         return render(request, 'djangoapp/add_review.html', context)
 
 
