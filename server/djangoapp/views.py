@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, render, redirect
+from django.views import View
 # from .models import 
 # from .restapis import related methods
 from .restapis import * 
@@ -111,12 +112,12 @@ def get_dealer_details(request, dealer_id):
         except RestException as e1:
             return HttpResponse('Rest Exception \n' + str(e1))
         if len(dealer) == 0:
-            context['dealer'] = {'id': dealer_id, "full_name": "No name found"}
+            context['dealer'] = {'id': dealer_id, 'full_name': "No name found"}
         else:
             context['dealer'] = dealer[0]
         #print(dealer)
         context['reviews'] = reviews
-        print(reviews)
+        #print(reviews)
         return render(request, 'djangoapp/dealer_details.html', context)
 
 
@@ -126,21 +127,28 @@ def get_sentiment(request):
         return HttpResponse(label)
 
 # Create a `add_review` view to submit a review
-def add_review(request, dealer_id):
-    if not request.user.is_authenticated:
-        return {'error': 'Add Review method: Not registered user'}
-    review = {}
-    review['name'] = 'Veselin Markov'
-    review['time'] = datetime.utcnow().isoformat()
-    review['dealership'] = int(dealer_id)
-    review['review'] = 'This is a great car dealer'
-    review['purchase'] = True
-    json_payload ={'review': review}
-    url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/review'
-    try:
-        response = post_request(url, json_payload)
-    except RestException as e1:
-        return HttpResponse('Rest Exception \n' + str(e1))
-    return HttpResponse(response)
+class Add_review(View):
+#def add_review(request, dealer_id):
+    def post(self, request, dealer_id):
+        if not request.user.is_authenticated:
+            return {'error': 'Add Review method: Not registered user'}
+        review = {}
+        review['name'] = 'Veselin Markov'
+        review['time'] = datetime.utcnow().isoformat()
+        review['dealership'] = int(dealer_id)
+        review['review'] = 'This is a great car dealer'
+        review['purchase'] = True
+        json_payload ={'review': review}
+        url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/review'
+        try:
+            response = post_request(url, json_payload)
+        except RestException as e1:
+            return HttpResponse('Rest Exception \n' + str(e1))
+        return HttpResponse(response)
+
+    def get(self, request, dealer_id):
+        context = {'dealer_id': dealer_id}
+        return render(request, 'djangoapp/add_review.html', context)
+
 
 
