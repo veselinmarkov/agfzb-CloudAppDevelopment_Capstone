@@ -129,15 +129,19 @@ def get_sentiment(request):
 # Create a `add_review` view to submit a review
 class Add_review(View):
 #def add_review(request, dealer_id):
-    def post(self, request, dealer_id):
+    def post(self, request, dealer_id, dealer_name):
         if not request.user.is_authenticated:
             return {'error': 'Add Review method: Not registered user'}
         review = {}
-        review['name'] = 'Veselin Markov'
-        review['time'] = datetime.utcnow().isoformat()
+        review['name'] = request.user.first_name +' ' +request.user.first_name
+        review['purchase_date'] = datetime.utcnow().isoformat(request.POST['purchasedate'])
         review['dealership'] = int(dealer_id)
-        review['review'] = 'This is a great car dealer'
-        review['purchase'] = True
+        review['review'] = request.POST['content']
+        review['purchase'] = True if request.POST['purchasecheck'] == 'on' else False
+        carmodel = CarModel.objects.get(id=request.POST['car'])
+        review['car_make'] = carmodel.carmake.name
+        review['car_model'] = carmodel.name
+        review['car_year'] = carmodel.year.strftime("%Y")
         json_payload ={'review': review}
         url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/review'
         try:
@@ -146,9 +150,9 @@ class Add_review(View):
             return HttpResponse('Rest Exception \n' + str(e1))
         return HttpResponse(response)
 
-    def get(self, request, dealer_id):
-        context = {'dealer_id': dealer_id}
-        carmodels = CarModel.objects.all()
+    def get(self, request, dealer_id, dealer_name):
+        context = {'dealer_id': dealer_id, 'dealer_name': dealer_name}
+        carmodels = CarModel.objects.filter(dealer=dealer_id)
         context['cars'] = carmodels
         return render(request, 'djangoapp/add_review.html', context)
 
