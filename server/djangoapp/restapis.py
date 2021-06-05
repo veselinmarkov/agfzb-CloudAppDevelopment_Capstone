@@ -41,7 +41,7 @@ def get_dealers_from_cf(url, **kwargs):
     # - Call get_request() with specified arguments
     # - Parse JSON results into a CarDealer object list
     result = []
-    json_result = get_request(url)
+    json_result = get_request(url, **kwargs)
     if 'docs' in json_result:
         dealers = json_result['docs']
         for dealer in dealers:
@@ -61,7 +61,9 @@ def get_dealer_reviews_from_cf(url, dealerId):
             if 'review' in review:
                 review['sentiment'] = analyze_review_sentiments(review['review'])
             result.append(DealerReview(review))
-    return result
+        return result
+    elif 'status' not in json_result or json_result['status'] !=404:        
+        raise RestException('The call to get_dealer_reviews return unexpected result: {}'.format(json_result))
 
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text

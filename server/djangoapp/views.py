@@ -104,12 +104,19 @@ def get_dealer_details(request, dealer_id):
             reviews = get_dealer_reviews_from_cf(url, dealer_id)
         except RestException as e1:
             return HttpResponse('Rest Exception \n' + str(e1))
-        #except Exception as e2:
-        #    return HttpResponse('Network Exception \n' + str(e2))
-        #review_names = ' '.join([review['name']+' '+str(review['sentiment']) for review in reviews])
-        #return HttpResponse(review_names)
-        context['dealerid'] = dealer_id
+        # get the dealer object based on the dealer_id
+        url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/dealership'
+        try:
+            dealer = get_dealers_from_cf(url, id=dealer_id)
+        except RestException as e1:
+            return HttpResponse('Rest Exception \n' + str(e1))
+        if len(dealer) == 0:
+            context['dealer'] = {'id': dealer_id, "full_name": "No name found"}
+        else:
+            context['dealer'] = dealer[0]
+        #print(dealer)
         context['reviews'] = reviews
+        print(reviews)
         return render(request, 'djangoapp/dealer_details.html', context)
 
 
