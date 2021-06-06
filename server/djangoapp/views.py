@@ -134,7 +134,11 @@ class Add_review(View):
             return {'error': 'Add Review method: Not registered user'}
         review = {}
         review['name'] = request.user.first_name +' ' +request.user.first_name
-        review['purchase_date'] = datetime.utcnow().isoformat(request.POST['purchasedate'])
+        try:
+            purch_date = datetime.strptime(request.POST['purchasedate'][:10], '%Y-%m-%d')
+            review['purchase_date'] = purch_date.strftime('%m/%d/%Y')
+        except ValueError as v1:
+            print('In datetime conversion: ' + str(v1))
         review['dealership'] = int(dealer_id)
         review['review'] = request.POST['content']
         review['purchase'] = True if request.POST['purchasecheck'] == 'on' else False
@@ -145,10 +149,10 @@ class Add_review(View):
         json_payload ={'review': review}
         url = 'https://11ab05d1.eu-gb.apigw.appdomain.cloud/bestcars/review'
         try:
-            response = post_request(url, json_payload)
+            post_request(url, json_payload)
         except RestException as e1:
             return HttpResponse('Rest Exception \n' + str(e1))
-        return HttpResponse(response)
+        return redirect('djangoapp:dealer_details', dealer_id)
 
     def get(self, request, dealer_id, dealer_name):
         context = {'dealer_id': dealer_id, 'dealer_name': dealer_name}
