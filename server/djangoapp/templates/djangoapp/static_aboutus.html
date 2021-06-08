@@ -6,6 +6,42 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     </head>
     <body>
+        <nav class="navbar bg-light d-flex">
+            <!--<div class="container-fluid">-->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/djangoapp">Best Car</a>
+            </div>
+            <ul class="navbar-nav navbar-expand-sm flex-grow-1">
+                <li class="nav-item">
+                <a class="nav-link mx-1" href="/djangoapp/contact">Contact Us</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link mx-1" href="/djangoapp/about">About Us</a>
+                </li>                
+            </ul>
+            <ul class="navbar-nav navbar-expand-sm navbar-right">
+                {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder="username" name="username">
+                            <input class="form-control" type="password" placeholder="password" name="psw">
+                            <button class="btn btn-primary" type="submit">Login</button>
+                            <a class="btn btn-link" href="{% url 'djangoapp:signup' %}">Sign Up</a>
+                        </div>
+                    </form>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                <a class="btn btn-link" href="#">{{ user.first_name }} ({{ user.username }})</a>
+                </li>
+                <li class="nav-item">
+                <a class="btn btn-link" href="/djangoapp/logout">Logout</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
         <div class="container">
             <h2>About Us</h2>
             <p>Welcome to Best Cars dealership, home to the best cars in North America. We sell domestic and imported cars at reasonable prices.
