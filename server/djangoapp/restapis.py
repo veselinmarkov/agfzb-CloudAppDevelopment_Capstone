@@ -4,7 +4,8 @@ import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 import os 
-from . import nlu_secrets
+from dotenv import load_dotenv
+#from . import nlu_secrets
 
 class RestException(Exception):
     pass
@@ -70,19 +71,21 @@ def get_dealer_reviews_from_cf(url, dealerId):
 def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
-    print('analyze ' +text)
+    #print('analyze ' +text)
     params = {}
     params['text'] = text
     #params['version'] = '2019-07-12'
     params['features'] = {"sentiment": {}}
     if 'API_KEY' in os.environ:
         api_key = os.environ['API_KEY']
-    else:
-        api_key = nlu_secrets.params['api_key']
+        print('API_KEY found in environ')
+    #else:
+    #    api_key = nlu_secrets.params['api_key']
     if 'API_URL' in os.environ:
         url = os.environ['API_URL']
-    else:
-        url = nlu_secrets.params['NLU_url']
+        print('API_URL found in environ')
+    #else:
+    #    url = nlu_secrets.params['NLU_url']
     #print(params)
     response = requests.post(url, headers={'Content-Type': 'application/json'}, 
         json=params, auth=HTTPBasicAuth('apikey', api_key))
@@ -93,3 +96,5 @@ def analyze_review_sentiments(text):
     except Exception:
         raise RestException('Abnormal return from NLU with params:'+response.text)
     return label
+
+load_dotenv()
