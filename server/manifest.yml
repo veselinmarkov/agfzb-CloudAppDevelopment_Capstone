@@ -2,10 +2,10 @@
   - name: djangoapp
     routes:
       - route: markov.eu-gb.mybluemix.net
-    memory: 128M
+    memory: 64M
     buildpack: python_buildpack
   - name: djangoapp-nginx
     routes:
       - route: markov.eu-gb.mybluemix.net/static
-    memory: 128M
+    memory: 64M
     buildpack: staticfile_buildpack
